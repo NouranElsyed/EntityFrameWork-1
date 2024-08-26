@@ -56,8 +56,6 @@ namespace Assignment
             //Console.WriteLine(dbContext.Entry(StudentWithId5).State);
 
             #endregion
-
-
         }
     }
 }

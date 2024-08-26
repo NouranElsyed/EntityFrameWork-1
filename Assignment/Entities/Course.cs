@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Assignment.Entities
 {
-    internal class Course
+    public class Course
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -19,6 +19,12 @@ namespace Assignment.Entities
         [MaxLength(30)]
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Top_Id { get; set; }
+
+        [ForeignKey("Top_Id")]
+        public Topic topic { get; set; }
+
+        public ICollection<Stud_Course> stud_Course { get; set; } = new HashSet<Stud_Course>();
+        public ICollection<Course_Inst> Course_Inst { get; set; } = new HashSet<Course_Inst>();
+
     }
 }
