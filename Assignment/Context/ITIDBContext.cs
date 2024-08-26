@@ -1,4 +1,5 @@
-﻿using Assignment.Entities;
+﻿using Assignment.ConfigrationClasses;
+using Assignment.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,33 @@ namespace Assignment.Context
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Student>().HasKey(S => S.Id);
-            modelBuilder.Entity<Student>().Property(S=>S.Id).UseIdentityColumn(1,1);
-            modelBuilder.Entity<Student>().Property(S => S.FName).HasColumnType("varchar").HasMaxLength(50).HasDefaultValue(10);
-            modelBuilder.Entity<Course_Inst>().HasKey(S => S.Inst_Id);
-            modelBuilder.Entity<Course_Inst>().HasKey(S => S.Course_Id);
-            modelBuilder.Entity<Stud_Course>().HasKey(S => S.Stud_Id);
-            modelBuilder.Entity<Stud_Course>().HasKey(S => S.Course_Id);
+            modelBuilder.Entity<Course_Inst>().HasKey(S => new { S.Inst_Id,S.Course_Id });
+            //modelBuilder.Entity<Course_Inst>().HasKey(S => S.Course_Id);
+            modelBuilder.Entity<Stud_Course>().HasKey(S => new { S.Stud_Id , S.Course_Id});
+            //modelBuilder.Entity<Stud_Course>().HasKey(S => S.Course_Id);
+            modelBuilder.Entity<Topic>()
+                .HasMany(T => T.Courses)
+                .WithOne(C => C.topic);
+            modelBuilder.Entity<Course>()
+                .HasMany(C => C.stud_Course)
+                .WithOne(SC => SC.Course)
+                .IsRequired(true)
+                .HasForeignKey(SC => SC.Course_Id);
 
+            modelBuilder.Entity<Course>()
+            .HasMany(C => C.Course_Inst)
+            .WithOne(SC => SC.Course)
+            .IsRequired(true)
+            .HasForeignKey(SC => SC.Course_Id);
 
+            modelBuilder.Entity<Instructor>()
+            .HasMany(I => I.Course_Inst)
+            .WithOne(IC => IC.Instructor)
+            .IsRequired(true)
+            .HasForeignKey(SC => SC.Course_Id);
+
+            modelBuilder.ApplyConfiguration(new DepartmentConfigurations());
+            modelBuilder.ApplyConfiguration(new StudentConfigurations());
 
             base.OnModelCreating(modelBuilder);
         }

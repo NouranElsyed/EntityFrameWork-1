@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Assignment.Entities
 {
-    internal class Instructor
+    public class Instructor
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,6 +24,18 @@ namespace Assignment.Entities
         public decimal Salary { get; set; }
         public string Address { get; set; }
         public int HourRate { get; set; }
-        public int Dept_Id { get; set; }
+
+
+
+        [InverseProperty("Manager")]
+        public Department department { get; set; }
+
+        [InverseProperty("Instructors")]
+        [ForeignKey("Dept_Id")]
+        public Department dept { get; set; }
+
+
+        public ICollection<Course_Inst> Course_Inst { get; set; } = new HashSet<Course_Inst>();
+
     }
 }
